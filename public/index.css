@@ -1,0 +1,163 @@
+body {
+    background: linear-gradient(135deg, #6366F1, #A855F7, #EC4899);
+    background-size: 300% 300%;
+    animation: gradientAnimation 15s ease infinite;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.container {
+    display: flex;
+    gap: 30px;
+    padding: 30px;
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.auth-card {
+    padding: 30px;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 350px;
+}
+
+.brand-text {
+    font-size: 2.2em;
+    color: #6366F1;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.auth-input {
+    background-color: #F3F4F6;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 12px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: #6366F1;
+    box-shadow: 0 0 0 0.15rem rgba(99, 102, 241, 0.25);
+}
+
+.vibrant-button {
+    background-color: #6366F1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.vibrant-button:hover {
+    background-color: #5A54E1;
+}
+
+.action-button {
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.signup-button {
+    background-color: #38BDF8;
+    color: white;
+    border: none;
+}
+
+.signup-button:hover {
+    background-color: #22ABED;
+    transform: scale(1.02);
+}
+
+.login-button {
+    background-color: #10B981;
+    color: white;
+    border: none;
+}
+
+.login-button:hover {
+    background-color: #0B8A5B;
+    transform: scale(1.02);
+}
+
+.camera-section {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.or-divider {
+    text-align: center;
+    margin: 15px 0;
+    color: #71717A;
+}
+
+.or-divider span {
+    background-color: #fff;
+    padding: 0 10px;
+    position: relative;
+    top: -0.6em;
+}
+
+.upload-button {
+    display: inline-block;
+    width: 90%;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.switch-prompt {
+    text-align: center;
+    margin-top: 20px;
+    color: #4B5563;
+}
+
+.switch-prompt a {
+    color: #6366F1;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.switch-prompt a:hover {
+    color: #5A54E1;
+}

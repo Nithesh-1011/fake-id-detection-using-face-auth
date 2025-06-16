@@ -1,0 +1,8 @@
+python-dotenv
+pymongo
+Flask
+deepface
+tf-keras
+opencv-python
+numpy
+Pillow

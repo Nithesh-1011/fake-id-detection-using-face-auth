@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect & Discover</title>
+    <link rel="stylesheet" href="index.css" />
+    <style>
+        #camera-stream {
+            display: none;
+            width: 100%; /* Make camera stream responsive within its container */
+            max-width: 320px;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        #capture-canvas {
+            display: none;
+        }
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card signup-card">
+            <h2 class="brand-text">Join the Community</h2>
+            <input type="text" id="signup-username" placeholder="Username" class="auth-input">
+            <input type="password" id="signup-password" placeholder="Password" class="auth-input">
+
+            <div class="camera-section">
+                <div class="camera-controls">
+                    <button id="open-camera-btn" class="vibrant-button"><i class="fas fa-camera"></i> Open Camera</button>
+                    <button id="capture-btn" class="vibrant-button" style="display: none;"><i class="fas fa-photo-video"></i> Capture</button>
+                </div>
+                <video id="camera-stream" autoplay playsinline></video>
+            </div>
+
+            <p class="or-divider"><span>or</span></p>
+            <label for="face-image" class="upload-button vibrant-button"><i class="fas fa-upload"></i> Upload Image</label>
+            <input type="file" id="face-image" accept="image/*" style="display: none;"><br>
+            <canvas id="capture-canvas" style="display: none;"></canvas>
+            <button onclick="signup()" class="action-button signup-button">Sign Up</button>
+            <p class="switch-prompt">Already have an account? <a href="#" onclick="showLogin()">Log in</a></p>
+        </div>
+
+        <div class="auth-card login-card" style="display: none;">
+            <h2 class="brand-text">Welcome Back!</h2>
+            <input type="text" id="login-username" placeholder="Username" class="auth-input">
+            <input type="password" id="login-password" placeholder="Password" class="auth-input">
+            <button onclick="login()" class="action-button login-button">Log In</button>
+            <p class="switch-prompt">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/your_fontawesome_kit.js" crossorigin="anonymous"></script>
+    <script>
+        // Replace 'your_fontawesome_kit.js' with your actual Font Awesome Kit URL
+        // Make sure you have Font Awesome set up in your project
+
+        const container = document.querySelector('.container');
+        const signupCard = document.querySelector('.signup-card');
+        const loginCard = document.querySelector('.login-card');
+
+        const cameraStream = document.getElementById('camera-stream');
+        const captureCanvas = document.getElementById('capture-canvas');
+        const captureBtn = document.getElementById('capture-btn');
+        const openCameraBtn = document.getElementById('open-camera-btn');
+        const faceImageInput = document.getElementById('face-image');
+        let mediaStream = null;
+        let capturedImageFile = null;
+
+        openCameraBtn.addEventListener('click', async () => {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                cameraStream.srcObject = mediaStream;
+                cameraStream.style.display = 'block';
+                captureBtn.style.display = 'block';
+                openCameraBtn.style.display = 'none';
+                faceImageInput.style.display = 'none';
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                alert('Error accessing camera. Please ensure you have a camera and have granted permissions.');
+            }
+        });
+
+        captureBtn.addEventListener('click', () => {
+            if (cameraStream.srcObject) {
+                const context = captureCanvas.getContext('2d');
+                captureCanvas.width = cameraStream.videoWidth;
+                captureCanvas.height = cameraStream.videoHeight;
+                context.drawImage(cameraStream, 0, 0, captureCanvas.width, captureCanvas.height);
+
+                captureCanvas.toBlob((blob) => {
+                    capturedImageFile = new File([blob], 'captured_image.jpg', { type: 'image/jpeg' });
+                    alert('Image captured! You can now signup.');
+                }, 'image/jpeg', 0.95);
+
+                mediaStream.getTracks().forEach(track => track.stop());
+                cameraStream.srcObject = null;
+                cameraStream.style.display = 'none';
+                captureBtn.style.display = 'none';
+                openCameraBtn.style.display = 'block';
+                faceImageInput.style.display = 'block';
+            } else {
+                alert('Camera stream not active.');
+            }
+        });
+
+        async function signup() {
+            const username = document.getElementById("signup-username").value;
+            const password = document.getElementById("signup-password").value;
+            let faceImage = document.getElementById("face-image").files[0];
+
+            if (!faceImage && !capturedImageFile) {
+                alert("Please upload or capture a face image.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("username", username);
+            formData.append("password", password);
+
+            if (capturedImageFile) {
+                formData.append("faceImage", capturedImageFile);
+            } else if (faceImage) {
+                formData.append("faceImage", faceImage);
+            }
+
+            const res = await fetch('/signup', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+            alert(data.message);
+
+            if (res.status === 201) {
+                localStorage.setItem("username", username);
+                window.location.href = "/home.html";
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById("login-username").value;
+            const password = document.getElementById("login-password").value;
+
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+            alert(data.message);
+
+            if (res.status === 200) {
+                localStorage.setItem("username", username);
+                window.location.href = "/home.html";
+            }
+        }
+
+        function showLogin() {
+            signupCard.style.display = 'none';
+            loginCard.style.display = 'flex';
+        }
+
+        function showSignup() {
+            loginCard.style.display = 'none';
+            signupCard.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
